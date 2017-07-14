@@ -1,21 +1,15 @@
 var express = require('express');
 var app = express();
 
-app.get('', function(req, r){
-  r.send('Hello');
-});
+let path = require('path');
+app.set('view engine','pug');
+app.set('views',path.join(__dirname, 'views'));
 
-app.get('/', function (req, r) {
-  r.redirect(302, '/name');
-});
-app.get('/name', function(req, r){
-    r.send('Akasa');
-});
+let route = require('./route');
+route(app);
 
-app.get('/show/:id', function(req, r){
-    r.send("ID:" + req.params.id);
+app.get('/', function(req, res){
 });
-
 
 
 app.listen(3000, function () {
