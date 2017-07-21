@@ -1,0 +1,15 @@
+extends layout.pug
+
+block head
+    meta(charset="UTF-8")
+    title 新規記事作成
+block content
+  .page-header
+    h1 新規記事作成
+    form(action="/articles" method="post")
+      .form-group
+        input.form-control(type="text" name="title")
+      .form-group
+        textarea.form-control(name = "body" rows="10")
+      .form-group
+        input.btn.btn-danger.btn-lg(type="submit" value="作成")

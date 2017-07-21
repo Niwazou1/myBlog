@@ -1,7 +1,7 @@
 {
   "name": "myblog",
   "version": "0.0.1",
-  "description": "僕の初ブログ",
+  "description": "Niwazou Channel",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,10 +9,14 @@
   "keywords": [
     "blog"
   ],
-  "author": "Taro Kawanoue",
+  "author": "Niwazou1",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
+    "morgan": "^1.8.2",
+    "mysql": "^2.13.0",
     "pug": "^2.0.0-rc.2"
   }
 }

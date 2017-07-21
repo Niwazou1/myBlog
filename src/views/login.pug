@@ -2,13 +2,13 @@ extends layout.pug
 
 block head
     meta(charset="UTF-8")
-    title ユーザー登録
+    title ログイン
 block content
   .row
     .col-md-6.col-md-offset-3
       .page-header
-        h1  ユーザー登録
-        form(action="/signup" method="post")
+        h1  ログイン
+        form(action="/login" method="post")
           .form-group
             .input-group
               span.input-group-addon
@@ -20,4 +20,4 @@ block content
                 i.glyphicon.glyphicon-lock
               input.form-control(type="password" name="password")
           .form-group
-          input.btn-primary.btn-block(type="submit" value="登録" )
+          input.btn-primary.btn-block(type="submit" value="ログイン" )
