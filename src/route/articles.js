@@ -1,3 +1,5 @@
+const MarkdownIt = require('markdown-it');
+
 module.exports = function(app){
     app.get("/articles", function(req, res){
         app.locals.db.query(
@@ -38,18 +40,124 @@ module.exports = function(app){
 
     app.get("/articles/:id", function(req, res){
         let id = req.params.id;
+        let article;
+        app.locals.dbp.query(
+            "SELECT * FROM `articles` WHERE `id` = ? LIMIT 1",
+            [id]
+        ).then(function(data){
+            let results = data[0];
+            let fields = data[1];
+            if(results.length < 1){
+                throw new Error("Article not found");
+                }
+
+                article = results[0];
+                let markdown = new MarkdownIt({
+                    html:true,
+                    linkify:true,
+                });
+                article.html = markdown.render(article.body);
+                return app.locals.dbp.query(
+                    "SELECT * FROM `users` WHERE `id` = ? LIMIT 1",
+                    [article.user_id]
+                );
+                res.render('article', { article:article });
+            }).then(function(data){
+                let results = data[0];
+                let fields = data[1];
+
+                if(results.length < 1){
+                    throw new Error("User not found");
+                }
+
+                let user = results[0];
+                article.user = user;
+
+                res.render('article', {article: article});
+            }).catch(function(error){
+                res.status(404).send(error.message);
+            });
         app.locals.db.query(
             "SELECT * FROM `articles` WHERE `id` = ? LIMIT 1",
             [id],
             function(error, results, fields){
-                if(results.length < 1){
-                    res.status(404).send("Not Found");
-                    return;
+                
+        });
+    });
+
+app.get("/articles/:id/edit", function(req, res){
+        let id = req.params.id;
+        let article;
+        app.locals.dbp.query(
+            "SELECT * FROM `articles` WHERE `id` = ? LIMIT 1",
+            [id]
+        ).then(function(data){
+            let results = data[0];
+            let fields = data[1];
+            if(results.length < 1){
+                throw new Error("Article not found");
                 }
 
-                let article = results[0];
+                article = results[0];
+                /*let markdown = new MarkdownIt({
+                    html:true,
+                    linkify:true,
+                });
+                article.html = markdown.render(article.body);*/
+                return app.locals.dbp.query(
+                    "SELECT * FROM `users` WHERE `id` = ? LIMIT 1",
+                    [article.user_id]
+                );
                 res.render('article', { article:article });
-            }
-        )
+            }).then(function(data){
+                let results = data[0];
+                let fields = data[1];
+
+                if(results.length < 1){
+                    throw new Error("User not found");
+                }
+
+                let user = results[0];
+                article.user = user;
+
+                res.render('edit_article', {article: article});
+            }).catch(function(error){
+                res.status(404).send(error.message);
+            });
+        app.locals.db.query(
+            "SELECT * FROM `articles` WHERE `id` = ? LIMIT 1",
+            [id],
+            function(error, results, fields){
+                
+        });
+    });
+
+    app.put("/articles/:id", function(req, res){
+        let id = req.params.id;
+        let title = req.body.title;
+        let body = req.body.body;
+
+        app.locals.dbp.query(
+            "UPDATE `articles` SET `title` = ?, `body` = ? WHERE `id` = ?",
+            [title, body, id]
+        ).then(function(data){
+            res.redirect(`/articles/${id}`);
+        }).catch(function(error){
+            res.status(404).send(error.message);
+        });
+    });
+
+    app.delete("/articles/:id", function(req, res){
+        let id = req.params.id;
+        
+        app.locals.dbp.query(
+            "DELETE FROM `articles` WHERE `id` = ?",
+            [id]
+        ).then(function(data){
+            res.redirect("/articles");
+        }).catch(function(error){
+            res.status(403).send(error.message);
+        });
     });
 }
+

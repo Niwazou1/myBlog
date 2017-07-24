@@ -3,6 +3,8 @@ var app = express();
 let bodyParser = require('body-parser'); // ここ
 let cookieParser = require('cookie-parser');
 app.use(cookieParser());
+let methodOverride = require('method-override');
+app.use(methodOverride('_method'));
 
 let path = require('path');
 app.set('view engine','pug');
@@ -22,7 +24,16 @@ let db = mysql.createConnection({
   database:"myblog"
 });
 db.connect();
+let mysqlPromise = require('mysql-promise');
+let dbp = mysqlPromise();
+dbp.configure({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "myblog"
+}, mysql);
 app.locals.db = db;
+app.locals.dbp = dbp;
 
 let route = require('./route');
 route(app);
